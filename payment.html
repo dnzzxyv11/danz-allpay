@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danz - All Payment</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            overflow-x: hidden;
+            color: #fff;
+            position: relative;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+        }
+
+        /* Night Sky Animation */
+        .night-sky {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="20" cy="20" r="0.5" fill="white"/><circle cx="50" cy="30" r="0.8" fill="white"/><circle cx="80" cy="20" r="0.3" fill="white"/><circle cx="10" cy="50" r="0.6" fill="white"/><circle cx="40" cy="60" r="0.4" fill="white"/><circle cx="70" cy="70" r="0.5" fill="white"/><circle cx="90" cy="90" r="0.7" fill="white"/><circle cx="30" cy="80" r="0.3" fill="white"/><circle cx="60" cy="40" r="0.5" fill="white"/></svg>');
+            animation: twinkle 5s infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .meteor {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 300px;
+            height: 1px;
+            background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,0.8));
+            transform: rotate(-45deg);
+            transform-origin: left;
+            animation: meteor 5s linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes meteor {
+            0% { 
+                transform: translateX(0) translateY(0) rotate(-45deg);
+                opacity: 1;
+            }
+            70% {
+                opacity: 1;
+            }
+            100% { 
+                transform: translateX(1000px) translateY(500px) rotate(-45deg);
+                opacity: 0;
+            }
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #ffffff, #a5b4fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Payment Options */
+        .payment-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .payment-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .payment-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .payment-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .payment-icon {
+            width: 50px;
+            height: 50px;
+            margin-right: 1rem;
+            object-fit: contain;
+        }
+
+        .payment-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .payment-description {
+            margin-bottom: 1.5rem;
+            opacity: 0.8;
+            font-size: 0.95rem;
+        }
+
+        .account-info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .account-info:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .account-number {
+            font-size: 1.1rem;
+            font-weight: 500;
+            word-break: break-all;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .payment-button {
+            display: inline-block;
+            padding: 0.7rem 1.5rem;
+            background: linear-gradient(45deg, #6366f1, #8b5cf6);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            text-decoration: none;
+            text-align: center;
+            flex: 1;
+        }
+
+        .payment-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .whatsapp-button {
+            background: linear-gradient(45deg, #25D366, #128C7E);
+        }
+
+        .whatsapp-button:hover {
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);
+        }
+
+        .copy-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 200, 100, 0.9);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            animation: fadeInOut 2s ease-in-out;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; transform: translateY(-20px); }
+            10%, 90% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* QRIS Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1e1b4b, #312e81);
+            padding: 2rem;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.6);
+            transition: color 0.2s ease;
+        }
+
+        .close-modal:hover {
+            color: white;
+        }
+
+        .qris-image {
+            width: 250px;
+            height: 250px;
+            margin: 1rem auto;
+            background-color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qris-image img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .instructions {
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding: 2rem 0;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .payment-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .payment-card {
+                padding: 1.2rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Night Sky -->
+    <div class="night-sky">
+        <div class="stars"></div>
+        <!-- Meteors will be added by JavaScript -->
+    </div>
+
+    <!-- Copy Notification -->
+    <div class="copy-notification" id="copyNotification">
+        Nomor Berhasil Di Copy
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <header>
+            <h1>DanzHosting</h1>
+            <p class="subtitle">Your Universal All Payment Solution By DanzHosting</p>
+        </header>
+
+        <div class="payment-options">
+            <!-- QRIS Payment -->
+            <div class="payment-card" id="qris-card">
+                <div class="payment-header">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/1200px-QR_code_for_mobile_English_Wikipedia.svg.png" alt="QRIS" class="payment-icon">
+                    <div>
+                        <h3 class="payment-title">QRIS Payment</h3>
+                        <p class="payment-description">Scan Code Qris Untuk Melakukan Pembayaran All Pay</p>
+                    </div>
+                </div>
+                <button class="payment-button" id="pay-with-qris">Show QR Code</button>
+            </div>
+
+            <!-- Dana Payment -->
+            <div class="payment-card">
+                <div class="payment-header">
+                    <img src="https://img100.pixhost.to/images/667/540082364_skyzopedia.jpg" alt="DANA" class="payment-icon">
+                    <div>
+                        <h3 class="payment-title">DANA</h3>
+                        <p class="payment-description">Bayar Menggunakan Dana</p>
+                    </div>
+                </div>
+                <div class="account-info" data-number="083857243960">
+                    <div class="account-number">0838-5724-3960</div>
+                </div>
+                <div class="button-group">
+                    <button class="payment-button" id="pay-with-dana">Pay with DANA</button>
+                    <a href="https://wa.me/62838?text=Halo%20admin,%20saya%20ingin%20konfirmasi%20pembayaran%20via%20DANA" class="payment-button whatsapp-button" target="_blank">Confirm via WA</a>
+                </div>
+            </div>
+
+            <!-- GoPay Payment -->
+            <div class="payment-card">
+                <div class="payment-header">
+                    <img src="https://img100.pixhost.to/images/667/540083275_skyzopedia.jpg" alt="GoPay" class="payment-icon">
+                    <div>
+                        <h3 class="payment-title">GoPay</h3>
+                        <p class="payment-description">Bayar Menggunakan Gopay</p>
+                    </div>
+                </div>
+                <div class="account-info" data-number="083857243960">
+                    <div class="account-number">0838-5724-3960</div>
+                </div>
+                <div class="button-group">
+                    <button class="payment-button" id="pay-with-gopay">Pay with GoPay</button>
+                    <a href="https://wa.me/6283857243960?text=Halo%20admin,%20saya%20ingin%20konfirmasi%20pembayaran%20via%20GoPay" class="payment-button whatsapp-button" target="_blank">Confirm via WA</a>
+                </div>
+            </div>
+
+            <!-- OVO Payment -->
+            <div class="payment-card">
+                <div class="payment-header">
+                    <img src="https://img100.pixhost.to/images/667/540082774_skyzopedia.jpg" alt="OVO" class="payment-icon">
+                    <div>
+                        <h3 class="payment-title">OVO</h3>
+                        <p class="payment-description">Mohon Maaf Ovo Saat Ini Sedang Tidak Tersedia</p>
+                    </div>
+                </div>
+                <div class="account-info" data-number="083857243960">
+                    <div class="account-number">0838-5724-3960</div>
+                </div>
+                <div class="button-group">
+                    <button class="payment-button" id="pay-with-ovo">Pay with OVO</button>
+                    <a href="https://wa.me/6283857243960?text=Halo%20admin,%20saya%20ingin%20konfirmasi%20pembayaran%20via%20OVO" class="payment-button whatsapp-button" target="_blank">Confirm via WA</a>
+                </div>
+            </div>
+
+            <!-- SeaBank Payment -->
+            <div class="payment-card">
+                <div class="payment-header">
+                    <img src="https://files.catbox.moe/tm16jp.jpg" alt="SeaBank" class="payment-icon">
+                    <div>
+                        <h3 class="payment-title">SeaBank</h3>
+                        <p class="payment-description">Mohon Maaf Akun SeaBank Belum Tersedia</p>
+                    </div>
+                </div>
+                <div class="account-info" data-number="1234567890">
+                    <div class="account-number">1234567890</div>
+                </div>
+                <div class="button-group">
+                    <button class="payment-button" id="pay-with-seabank">Pay with SeaBank</button>
+                    <a href="https://wa.me/6283857243960?text=Halo%20admin,%20saya%20ingin%20konfirmasi%20pembayaran%20via%20SeaBank" class="payment-button whatsapp-button" target="_blank">Confirm via WA</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QRIS Modal -->
+    <div class="modal" id="qris-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>QRIS Payment</h2>
+            <p>Scan qris di bawah ini untuk melakukan pembayaran</p>
+            <div class="qris-image">
+                <img src="https://files.catbox.moe/o3iiuy.png" alt="QRIS Code">
+            </div>
+            <p class="instructions">
+              1. Buka aplikasi perbankan Anda<br> 
+              2. Pilih pembayaran QRIS<br> 
+              3. Pindai kode ini<br> 
+              4. Konfirmasikan pembayaran
+
+            </p>
+            <div class="button-group" style="margin-top: 1rem;">
+                <button class="payment-button" id="confirm-qris">I've Made the Payment</button>
+                <a href="https://wa.me/6283857243960?text=Halo%20admin,%20saya%20ingin%20konfirmasi%20pembayaran%20via%20QRIS" class="payment-button whatsapp-button" target="_blank">Confirm via WA</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 DanzHost. All rights reserved.</p>
+        <p>Website All Payment By Danii Host</p>
+    </footer>
+
+    <script>
+        // Create shooting meteors
+        function createMeteors() {
+            const nightSky = document.querySelector('.night-sky');
+            
+            for (let i = 0; i < 5; i++) {
+                const meteor = document.createElement('div');
+                meteor.className = 'meteor';
+                
+                // Random position
+                const startX = Math.random() * 100;
+                const startY = Math.random() * 100;
+                
+                meteor.style.left = `${startX}%`;
+                meteor.style.top = `${startY}%`;
+                
+                // Random delay and duration
+                const delay = Math.random() * 20;
+                const duration = 2 + Math.random() * 3;
+                
+                meteor.style.animationDelay = `${delay}s`;
+                meteor.style.animationDuration = `${duration}s`;
+                
+                nightSky.appendChild(meteor);
+            }
+        }
+
+        // QRIS Modal functionality
+        function setupModal() {
+            const modal = document.getElementById('qris-modal');
+            const btn = document.getElementById('pay-with-qris');
+            const span = document.getElementsByClassName('close-modal')[0];
+            
+            btn.onclick = function(e) {
+                e.preventDefault();
+                modal.style.display = 'flex';
+            }
+            
+            span.onclick = function() {
+                modal.style.display = 'none';
+            }
+            
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            }
+        }
+
+        // Setup one-click copy functionality
+        function setupAutoCopy() {
+            const accountInfos = document.querySelectorAll('.account-info');
+            const notification = document.getElementById('copyNotification');
+            
+            accountInfos.forEach(info => {
+                info.addEventListener('click', function() {
+                    const number = this.getAttribute('data-number');
+                    
+                    // Copy to clipboard
+                    navigator.clipboard.writeText(number).then(() => {
+                        // Show notification
+                        notification.style.display = 'block';
+                        setTimeout(() => {
+                            notification.style.display = 'none';
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy: ', err);
+                        // Fallback for browsers that don't support clipboard API
+                        const textarea = document.createElement('textarea');
+                        textarea.value = number;
+                        document.body.appendChild(textarea);
+                        textarea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textarea);
+                        
+                        // Show notification
+                        notification.style.display = 'block';
+                        setTimeout(() => {
+                            notification.style.display = 'none';
+                        }, 2000);
+                    });
+                });
+            });
+        }
+
+        // Setup payment buttons
+        function setupPaymentButtons() {
+            // DANA Payment
+            document.getElementById('pay-with-dana').addEventListener('click', function() {
+                const account = document.querySelector('[data-number="083857243960"]').getAttribute('data-number');
+                alert(`Permintaan pembayaran dikirim ke owner ${account}. Silakan periksa aplikasi Anda untuk menyelesaikan pembayaran.`);
+            });
+
+            // GoPay Payment
+            document.getElementById('pay-with-gopay').addEventListener('click', function() {
+                const account = document.querySelector('[data-number="083857243960"]').getAttribute('data-number');
+                alert(`Permintaan pembayaran dikirim ke owner ${account}. Silakan periksa aplikasi Anda untuk menyelesaikan pembayaran.`);
+            });
+
+            // OVO Payment
+            document.getElementById('pay-with-ovo').addEventListener('click', function() {
+                const account = document.querySelector('[data-number="083857243960"]').getAttribute('data-number');
+                alert(`Permintaan pembayaran dikirim ke owner ${account}. Silakan periksa aplikasi Anda untuk menyelesaikan pembayaran.`);
+            });
+
+            // SeaBank Payment
+            document.getElementById('pay-with-seabank').addEventListener('click', function() {
+                const account = document.querySelector('[data-number="1234567890"]').getAttribute('data-number');
+                alert(`Permintaan pembayaran dikirim ke owner ${account}. Terima Kasih`);
+            });
+
+            // QRIS Confirmation
+            document.getElementById('confirm-qris').addEventListener('click', function() {
+                alert('Terima Kasih');
+                document.getElementById('qris-modal').style.display = 'none';
+            });
+        }
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            createMeteors();
+            setupModal();
+            setupAutoCopy();
+            setupPaymentButtons();
+            
+            // Add animation to payment cards on scroll
+            const paymentCards = document.querySelectorAll('.payment-card');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            paymentCards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = `opacity 0.5s ease ${index * 0.1}s, transform 0.5s ease ${index * 0.1}s`;
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>
